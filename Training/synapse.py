@@ -32,6 +32,10 @@ class Synapse:
     def identity_initialize(self,mult=1):
         assert(self.input_size == len(self.post))
         self.weight = np.eye(self.input_size) * mult
+
+    def reset(self):
+        for neuron in self.post:
+            neuron.reset()
     
 
         

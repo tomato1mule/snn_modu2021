@@ -100,6 +100,14 @@ class SimpleNeuron:
     def SetLeak(self, leak):
         self.leak = leak
 
+    def reset(self):
+        self.t_rest = -1
+        self.V = self.V_rest
+        if self.record:
+            self.V_history = []
+            self.spike_history = []
+            self.epsp_history =[]
+
         
 
             

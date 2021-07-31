@@ -74,9 +74,12 @@ def encode(image,param):
     freqs = np.interp(image.reshape(-1), [-1.069,2.781], [1,20])
     periods = np.ceil(600/freqs)
 
+    n_timesteps = timeline.shape[0]
+    random_t0 = np.random.randint(0,n_timesteps,freqs.shape)
+
     spiketrain = np.zeros((timeline.shape[0],*freqs.shape))
     for i,t in enumerate(timeline):
-        spiketrain[i] = ((i+1)%periods == 0)*1.
+        spiketrain[i] = ((i+1+random_t0)%periods == 0)*1.
 
     spiketrain = [spiketrain[:,i] for i in range(spiketrain.shape[1])]
     
