@@ -11,8 +11,9 @@ class Synapse:
             self.random_initialize(0,1)
         assert self.weight.shape == (self.input_size, len(self.post))
 
-    def run(self,input_spikes, t):
-        epsp = input_spikes @ self.weight
+    def run(self,input_spikes, t, adaptation = 1):
+        assert input_spikes.shape[0] == self.input_size
+        epsp = input_spikes @ self.weight * adaptation
 
         output_spikes = np.zeros(len(self.post))
         for i,neuron in enumerate(self.post):
@@ -24,11 +25,13 @@ class Synapse:
         self.weight = weight
 
     def random_initialize(self,low,high):
-        self.weight = np.random.randint(low,high,size=(self.input_size, len(self.post)))
+        #self.weight = np.random.randint(low,high,size=(self.input_size, len(self.post)))
+        self.weight = np.random.uniform(low,high,size=(self.input_size, len(self.post)))
     
-    def identity_initialize(self):
+
+    def identity_initialize(self,mult=1):
         assert(self.input_size == len(self.post))
-        self.weight = np.eye(self.input_size)
+        self.weight = np.eye(self.input_size) * mult
     
 
         
