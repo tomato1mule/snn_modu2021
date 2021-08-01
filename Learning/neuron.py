@@ -51,13 +51,15 @@ class SimpleNeuron:
 
 
         # Recovery to V_rest
-        if self.V > self.V_rest: # If Depolarized
-            self.V -= self.leak 
-        elif self.V < self.V_rest: # If Hyperpolarized
-            self.V += self.leak
+        #if self.V > self.V_rest: # If Depolarized
+        #    self.V -= self.leak 
+        #elif self.V < self.V_rest: # If Hyperpolarized
+        #    self.V += self.leak
+        self.V -= self.leak 
         # V_min
         if self.V < self.V_min:
-            self.V = self.V_min
+            #self.V = self.V_min
+            self.V = self.V_rest
 
 
         # Record V, Input, Spikes
