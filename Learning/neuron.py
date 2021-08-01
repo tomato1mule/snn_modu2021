@@ -16,7 +16,7 @@ class NeuronParam:
         self.V_inhibit = V_inhibit
         self.leak = leak
 
-        if V_spike: #Only for Visualization
+        if V_spike: #Purely for visualization purpose
             self.V_spike = V_spike
         else:
             self.V_spike = V_thr * 2 
@@ -33,7 +33,7 @@ class SimpleNeuron:
         self.V_rest = param.V_rest
         self.V_thr = param.V_thr
         self.V_min = param.V_min
-        self.V_spike = param.V_spike  #Only for Visualization
+        self.V_spike = param.V_spike  #Purely for visualization purpose
         self.V_inhibit = param.V_inhibit
         self.leak = param.leak
 
@@ -51,15 +51,13 @@ class SimpleNeuron:
 
 
         # Recovery to V_rest
-        #if self.V > self.V_rest: # If Depolarized
-        #    self.V -= self.leak 
-        #elif self.V < self.V_rest: # If Hyperpolarized
-        #    self.V += self.leak
-        self.V -= self.leak 
+        if self.V > self.V_rest: # If Depolarized
+            self.V -= self.leak 
+        elif self.V < self.V_rest: # If Hyperpolarized
+            self.V += self.leak
         # V_min
         if self.V < self.V_min:
-            #self.V = self.V_min
-            self.V = self.V_rest
+            self.V = self.V_min
 
 
         # Record V, Input, Spikes
