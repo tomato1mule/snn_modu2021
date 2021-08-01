@@ -33,12 +33,18 @@ class SimpleNeuron:
         self.leak = param.leak
         self.record = param.record
         self.V_spike = param.V_spike
+        self.recent_activity = 0
+        self.alpha = 1-(1./200)
+        self.spiked_V = self.V_min
+        self.V_inhibit = -500
         if self.record:
             self.V_history = []
             self.spike_history = []
             self.epsp_history =[]
         
     def run(self,input,t):
+        self.spiked_V = self.V_min
+
         # Record V
         if self.record:
             self.V_history.append(self.V)
@@ -51,6 +57,8 @@ class SimpleNeuron:
             if self.record:
                 self.spike_history.append(0)
                 self.epsp_history.append(0)
+
+                self.recent_activity = (self.recent_activity * self.alpha )
             
             return 0
         
@@ -64,8 +72,13 @@ class SimpleNeuron:
 
         # Spike
         if self.V >= self.V_thr:
+            self.spiked_V = self.V #used for lateral inhibition
             self.V = self.V_rest
             self.t_rest = t + self.t_refractory
+
+            
+            self.recent_activity = (self.recent_activity * self.alpha ) \
+                                    +(1-self.alpha)
 
             # Record spike
             if self.record:
@@ -89,10 +102,15 @@ class SimpleNeuron:
         if self.record:
             self.spike_history.append(0)
 
+        self.recent_activity = (self.recent_activity * self.alpha )
+
         return 0
 
     def inhibit(self):
-        self.V = self.V_min
+        self.V = self.V_inhibit
+        self.t_rest = -1
+        if self.record:
+            self.spike_history[-1] = 0
     
     def SetThreshold(self, V_thr):
         self.V_thr = V_thr

@@ -37,7 +37,7 @@ def RF_convolution(image,kernel):
         input_tensor = torch.tensor(image.reshape(1,1,*image.shape),dtype=torch.float32)
         output = conv(input_tensor).numpy().reshape(*image.shape)
 
-    return output
+    return output/255
 
 
 def encode_original(image,param):
@@ -70,18 +70,22 @@ def encode_original(image,param):
 
 def encode(image,param):
     timeline = np.arange(0,param.T+param.dt,param.dt)
-
-    freqs = np.interp(image.reshape(-1), [-1.069,2.781], [1,20])
-    periods = np.ceil(600/freqs)
-
     n_timesteps = timeline.shape[0]
-    #random_t0 = np.random.randint(0,n_timesteps,freqs.shape)
+
+    freqs = np.interp(image.reshape(-1), [-1.069,2.781], [1/600,20/600])
+    assert np.sum(freqs<=0) == 0
+    periods = np.ceil(1./freqs)
+
+    
+    #random_t0 = np.random.randint(0,n_timesteps//4,freqs.shape)
     #random_t0 = np.random.randint(0,5,freqs.shape)
     random_t0 = 0
 
     spiketrain = np.zeros((timeline.shape[0],*freqs.shape))
     for i,t in enumerate(timeline):
-        spiketrain[i] = ((i+1+random_t0)%periods == 0)*1.
+        if i==0:
+            continue
+        spiketrain[i] = ((i+random_t0)%np.ceil(periods/param.dt) == 0)*1.
 
     spiketrain = [spiketrain[:,i] for i in range(spiketrain.shape[1])]
     
