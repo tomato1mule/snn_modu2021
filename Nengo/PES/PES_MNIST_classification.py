@@ -17,7 +17,7 @@ data = np.array(train_dataset.data)/255.
 label = np.array(train_dataset.targets)
 
 
-T = 1.
+T = 0.5
 n_classes = 10
 dim = 784
 n_train = 1000
@@ -52,7 +52,7 @@ with model:
     
     connection_to_learn = \
         nengo.Connection(pre,post,function=lambda _:np.random.random(n_classes))
-    connection_to_learn.learning_rule_type = nengo.PES(learning_rate=6e-5)
+    connection_to_learn.learning_rule_type = nengo.PES(learning_rate=1e-4)
     nengo.Connection(error,connection_to_learn.learning_rule)    
     
 
